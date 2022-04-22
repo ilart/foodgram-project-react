@@ -67,20 +67,20 @@ class User(AbstractUser):
         return self.username
 
 
-class Follow(models.Model):
+class Subscribe(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='follower',
+        related_name='subscribed',
         verbose_name='Подписчик',
         blank=True,
         null=True,
     )
 
-    following = models.ForeignKey(
+    subscribing = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='following',
+        related_name='subscribing',
         verbose_name='Автор'
     )
 
@@ -89,4 +89,6 @@ class Follow(models.Model):
         verbose_name_plural = 'Подписки'
 
     def __str__(self):
-        return f'{self.user.id} -> {self.following.id}'
+        # import pdb
+        # pdb.set_trace()
+        return f'{self.user} -> {self.subscribing}'

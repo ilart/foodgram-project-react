@@ -1,6 +1,6 @@
 import django_filters
 
-from recipes.models import Recipe
+from recipes.models import Ingredient, Recipe
 
 
 class RecipeFilter(django_filters.FilterSet):
@@ -9,6 +9,27 @@ class RecipeFilter(django_filters.FilterSet):
         lookup_expr='contains',
     )
 
+    is_in_shopping_cart = django_filters.BooleanFilter(
+        field_name='is_in_shopping_cart',
+        method='is_in_shopping_cart'
+    )
+
+    def is_in_shopping_cart(self, queryset, name, value):
+        import pdb
+        pdb.set_trace()
+
+
     class Meta:
         model = Recipe
-        fields = ('tags', 'author', )
+        fields = ('tags', 'author',)
+
+
+class IngredientFilter(django_filters.FilterSet):
+    name = django_filters.CharFilter(
+        field_name='name',
+        lookup_expr='startswith'
+    )
+
+    class Meta:
+        model = Ingredient
+        fields = ['name',]
