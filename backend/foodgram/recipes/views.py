@@ -13,8 +13,8 @@ from rest_framework import viewsets
 from recipes.filters import IngredientFilter, RecipeFilter
 from recipes.models import Ingredient, IngredientInRecipe, Favorite, Recipe
 from recipes.models import ShoppingCart, Tag
-from recipes.serializers import IngredientSerializer, RecipeSerializer
-from recipes.serializers import RecipeSerializerMinified, ShoppingCartSerializer
+from recipes.serializers import IngredientSerializer, RecipeSerializerMinified
+from recipes.serializers import RecipeSerializer, ShoppingCartSerializer
 from recipes.serializers import TagSerializer
 
 

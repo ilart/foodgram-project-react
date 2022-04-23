@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from users.models import User, Subscribe
-from users.serializers import SubscribeSerializer, UserSerializer
+from users.serializers import SubscribeSerializer
 
 
 SELF_SUBSCRIBE_FORBIDDEN = 'Подписка на самого себя запрещена'
