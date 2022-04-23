@@ -1,50 +1,47 @@
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework import status
-from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
-from recipes.serializer import RecipeSerializerMinified
-from recipes.models import Recipe
-from users.serializer import SubscribeSerializer, UserSerializer
 from users.models import User, Subscribe
+from users.serializers import SubscribeSerializer, UserSerializer
 
 
 SELF_SUBSCRIBE_FORBIDDEN = 'Подписка на самого себя запрещена'
-ALREADY_SUBSCRIBED = 'Вы уже подписаны на {} автора'
-ERROR_KEY_NAME = 'error'
+ALREADY_SUBSCRIBED = 'Вы уже подписаны на {user} автора'
+ERROR = 'error'
 
 
 class SubscribeViewSet(ModelViewSet):
     serializer_class = SubscribeSerializer
-    # filter_backends = (filters.SearchFilter, )
-    # search_fields = ['following__username', ]
-    permission_classes = (IsAuthenticated, )
-    queryset = Subscribe.objects.all()
+    permission_classes = (IsAuthenticated,)
 
-
-    def destroy(self, request, *args, **kwargs):
+    def destroy(self, request, subscribing):
         get_object_or_404(
             Subscribe,
-            user=request.user.id, subscribing__id=self.kwargs['subscribing']
+            user=request.user.id, subscribing__id=subscribing
         ).delete()
         return Response(status=204)
-    #
 
-    def create(self, request, *args, **kwargs):
-        if self.kwargs['subscribing'] == request.user.id:
-            Response({ERROR_KEY_NAME: SELF_SUBSCRIBE_FORBIDDEN}, status=400)
-        subscribing = get_object_or_404(User, id=self.kwargs['subscribing'])
+    def create(self, request, subscribing):
+        if subscribing == request.user.id:
+            return Response({ERROR: SELF_SUBSCRIBE_FORBIDDEN}, status=400)
+        subscribing_user = get_object_or_404(User, id=subscribing)
         item, created = Subscribe.objects.get_or_create(
-            subscribing=subscribing,
+            subscribing=subscribing_user,
             user=request.user
         )
         if not created:
-            return Response({ERROR_KEY_NAME: ALREADY_SUBSCRIBED}, status=400)
-        recipes = RecipeSerializerMinified(Recipe.objects.filter(author=item.subscribing), many=True).data
-        return Response({
-            **UserSerializer(subscribing, many=False).data,
-            'recipes': recipes,
-            'recipes_count': len(recipes)
-        }, status=201)
+            return Response(
+                {ERROR: ALREADY_SUBSCRIBED.format(
+                    user=subscribing_user.username
+                )},
+                status=400
+            )
+        return Response(SubscribeSerializer(
+            item,
+            many=False,
+            context={'request': request}).data, status=201)
+
+    def get_queryset(self):
+        return Subscribe.objects.filter(user=self.request.user)
