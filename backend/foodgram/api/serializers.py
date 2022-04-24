@@ -16,6 +16,7 @@ from users.models import Subscribe, User
 ENCODING_TYPE = 'UTF-8'
 RECIPE_IMAGES = MEDIA_URL + 'recipes/images/'
 SPLIT = ';base64,'
+SELF_FOLLOW_FORBIDDEN = 'Подписка на самогосебя запрещена.'
 
 
 def check_user_recipe_in_model(user, recipe, model):
@@ -23,9 +24,6 @@ def check_user_recipe_in_model(user, recipe, model):
         user=user,
         recipe=recipe
     ) else False
-
-
-SELF_FOLLOW_FORBIDDEN = 'Подписка на самогосебя запрещена.'
 
 
 class UserSerializer(ModelSerializer):
