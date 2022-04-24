@@ -113,7 +113,7 @@ DJOSER = {
         'user': ['rest_framework.permissions.IsAuthenticated'],
     },
     'SERIALIZERS': {
-        'user': 'users.serializers.UserSerializer'
+        'user': 'api.serializers.UserSerializer'
     },
     'HIDE_USERS': False,
     'LOGIN_FIELD': 'email'

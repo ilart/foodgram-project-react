@@ -89,6 +89,4 @@ class Subscribe(models.Model):
         verbose_name_plural = 'Подписки'
 
     def __str__(self):
-        # import pdb
-        # pdb.set_trace()
         return f'{self.user} -> {self.subscribing}'
