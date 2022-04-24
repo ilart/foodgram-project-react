@@ -16,6 +16,7 @@ services:
     image: ilyaart/foodgram:latest
     restart: always
     depends_on:
+      - db
       - frontend
     volumes:
       - ../frontend/build/static:/app/static
