@@ -9,7 +9,7 @@ from rest_framework.validators import UniqueTogetherValidator
 from api.filters import RecipeFilter
 from recipes.models import Ingredient, IngredientInRecipe, Favorite, Recipe
 from recipes.models import ShoppingCart, Tag, TagInRecipe
-from foodgram.settings import BASE_URL, BASE_DIR, MEDIA_URL
+from foodgram.settings import BASE_DIR, MEDIA_URL
 from users.models import Subscribe, User
 
 
