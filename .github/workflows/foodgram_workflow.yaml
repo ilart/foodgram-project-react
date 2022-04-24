@@ -27,7 +27,7 @@ jobs:
 
   build_and_push:
     runs-on: ubuntu-latest
-    needs: smoke_test
+#    needs: smoke_test
     if: github.ref == 'refs/heads/master'
     steps:
     - name: check out
