@@ -9,7 +9,7 @@ from rest_framework.validators import UniqueTogetherValidator
 from api.filters import RecipeFilter
 from recipes.models import Ingredient, IngredientInRecipe, Favorite, Recipe
 from recipes.models import ShoppingCart, Tag, TagInRecipe
-from foodgram.settings import BASE_DIR, MEDIA_URL
+from foodgram.settings import BASE_DIR, BASE_URL, MEDIA_URL
 from users.models import Subscribe, User
 
 
@@ -123,7 +123,7 @@ class TagSerializer(ModelSerializer):
 
 class ImageSerializer(BaseSerializer):
     def to_representation(self, value):
-        return self.context['request'].build_absolute_uri('value')
+        return f'{BASE_URL}{value}'
 
     def to_internal_value(self, data):
         extension, image = data.split(SPLIT)
