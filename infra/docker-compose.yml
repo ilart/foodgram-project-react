@@ -13,7 +13,7 @@ services:
     volumes:
       - ../frontend/:/app/result_build/
   backend:
-    image: foodgram:v4
+    image: ilyaart/foodgram:latest
     restart: always
     depends_on:
       - frontend
