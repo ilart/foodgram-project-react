@@ -123,14 +123,14 @@ class TagSerializer(ModelSerializer):
 
 class ImageSerializer(BaseSerializer):
     def to_representation(self, value):
-        return value
+        return self.context['request'].build_absolute_uri('value')
 
     def to_internal_value(self, data):
         extension, image = data.split(SPLIT)
         path = f'{RECIPE_IMAGES}{uuid.uuid4().hex}.{extension.split("/")[-1]}'
         with open(BASE_DIR + path, "wb") as handler:
             handler.write(base64.decodebytes(image.encode(ENCODING_TYPE)))
-        return BASE_URL + path
+        return path
 
 
 class RecipeSerializer(ModelSerializer):

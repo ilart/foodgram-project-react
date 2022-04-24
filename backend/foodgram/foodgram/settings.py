@@ -24,8 +24,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'rest_framework.authtoken',
-    'djoser',
-    'corsheaders'
+    'djoser'
 ]
 
 MIDDLEWARE = [
@@ -38,10 +37,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-]
-
-CORS_ALLOWED_ORIGINS = [
-    'localhost', 'backend'
 ]
 
 ROOT_URLCONF = 'foodgram.urls'
