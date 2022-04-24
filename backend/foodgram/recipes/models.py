@@ -90,7 +90,7 @@ class Recipe(models.Model):
     )
 
     class Meta:
-        ordering = ['pub_date']
+        ordering = ['-pub_date']
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
 
@@ -107,6 +107,10 @@ class TagInRecipe(models.Model):
         Tag,
         on_delete=models.CASCADE,
     )
+
+    class Meta:
+        verbose_name = 'Тег в рецепте'
+        verbose_name_plural = 'Теги в рецептах'
 
     def __str__(self):
         return f'{self.recipe} {self.tag}'
@@ -125,6 +129,10 @@ class IngredientInRecipe(models.Model):
         'Количество',
         validators=[MinValueValidator(MIN_LIMIT, MIN_ERROR)]
     )
+
+    class Meta:
+        verbose_name = 'Ингредиент в рецепте'
+        verbose_name_plural = 'Ингредиенты в рецептах'
 
     def __str__(self):
         return f'{self.recipe} {self.ingredient}'

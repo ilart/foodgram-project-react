@@ -19,7 +19,7 @@ services:
       - frontend
     volumes:
       - ../frontend/build/static:/app/static
-      - ../frontend/build/static/media:/app/media
+      - ../frontend/build/media:/app/media
     env_file:
       - ./.env
   nginx:

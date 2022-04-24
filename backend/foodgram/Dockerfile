@@ -11,6 +11,9 @@ COPY recipes ./recipes
 COPY users ./users
 COPY manage.py ./
 COPY fixtures.json ./
+RUN python3 ./manage.py migrate
+RUN python3 ./manage.py collectstatic
+
 
 CMD ["gunicorn", "foodgram.wsgi:application", "--bind" , "0:8000"]
 

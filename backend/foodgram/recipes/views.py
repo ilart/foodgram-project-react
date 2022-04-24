@@ -29,6 +29,12 @@ class TagsViewSet(ListModelMixin, RetrieveModelMixin, viewsets.GenericViewSet):
     serializer_class = TagSerializer
     queryset = Tag.objects.all()
     lookup_field = 'id'
+    pagination_class = None
+    permission_classes = (permissions.AllowAny,)
+
+
+class RecipePaginator(PageNumberPagination):
+    page_size_query_param = 'limit'
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -37,7 +43,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('tags',)
     filter_class = RecipeFilter
-    pagination_class = PageNumberPagination
+    pagination_class = RecipePaginator
 
     def get_queryset(self):
         queryset = Recipe.objects.all()
@@ -103,7 +109,9 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = IngredientSerializer
     queryset = Ingredient.objects.all()
     filter_backends = (DjangoFilterBackend,)
+    pagination_class = None
     filterset_class = IngredientFilter
+    permission_classes = (permissions.AllowAny,)
 
 
 class ShoppingCartViewSet(viewsets.ModelViewSet):
