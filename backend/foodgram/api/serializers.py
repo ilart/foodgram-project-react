@@ -206,12 +206,6 @@ class RecipeSerializer(ModelSerializer):
         return instance
 
 
-class RecipeSerializerMinified(ModelSerializer):
-    class Meta:
-        model = Recipe
-        fields = ['id', 'name', 'image', 'cooking_time']
-
-
 class ShoppingCartSerializer(ModelSerializer):
     user = HiddenField(default=CurrentUserDefault())
     recipe = RecipeSerializerMinified(read_only=True, default='')
