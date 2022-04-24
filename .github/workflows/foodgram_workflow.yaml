@@ -68,6 +68,7 @@ jobs:
           echo DB_PORT=${{ secrets.DB_PORT }} >> .env
           sudo docker-compose up -d
           sudo docker-compose exec backend python3 ./manage.py migrate
+          sudo docker-compose exec backend python3 ./manage.py collectstatic
           sudo docker-compose exec backend python3 ./manage.py loaddata fixtures.json
 
   send_message:
