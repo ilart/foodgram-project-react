@@ -8,4 +8,5 @@ django-filter==21.1
 python-dotenv==0.19.2
 gunicorn==20.0.4
 psycopg2-binary==2.8.6
-djoser
+djoser==2.1.0
+django-cors-headers==3.11.0
