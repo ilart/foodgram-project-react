@@ -7,9 +7,9 @@ load_dotenv()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.getenv('SECRET_KEY', default='secret_sequence')
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*', 'backend', 'localhost']
+ALLOWED_HOSTS = ['backend', 'localhost']
 
 INSTALLED_APPS = [
     'users',
@@ -41,7 +41,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8000',
+    'localhost', 'backend'
 ]
 
 ROOT_URLCONF = 'foodgram.urls'
