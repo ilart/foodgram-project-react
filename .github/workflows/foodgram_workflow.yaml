@@ -66,10 +66,10 @@ jobs:
           echo DB_HOST=${{ secrets.DB_HOST }} >> .env
           echo DB_PORT=${{ secrets.DB_PORT }} >> .env
           sudo docker-compose up --build -d >> ./log 2>&1
-          sudo docker-compose exec backend python3 ./manage.py collectstatic --noinput
-          sudo docker-compose exec backend python3 ./manage.py makemigrations >> ./log 2>&1
-          sudo docker-compose exec backend python3 ./manage.py migrate >> ./log 2>&1
-          sudo docker-compose exec backend python3 ./manage.py loaddata fixtures.json
+          sudo docker-compose exec -d backend python3 ./manage.py collectstatic --noinput
+          sudo docker-compose exec -d backend python3 ./manage.py makemigrations
+          sudo docker-compose exec -d backend python3 ./manage.py migrate
+          sudo docker-compose exec -d backend python3 ./manage.py loaddata fixtures.json
 
   send_message:
     runs-on: ubuntu-latest
