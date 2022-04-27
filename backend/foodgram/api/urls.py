@@ -1,9 +1,13 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from api.views import SubscribeViewSet
-from api.views import IngredientViewSet, RecipeViewSet
-from api.views import ShoppingCartViewSet, TagsViewSet
+from api.views import (
+    SubscribeViewSet,
+    IngredientViewSet,
+    RecipeViewSet,
+    # ShoppingCartViewSet,
+    TagsViewSet
+)
 
 
 app_name = 'api'
@@ -26,13 +30,13 @@ router_v1.register(
 
 urlpatterns = [
     path('', include(router_v1.urls)),
-    path(
-        'recipes/<int:recipe>/shopping_cart/',
-        ShoppingCartViewSet.as_view({
-            'delete': 'destroy',
-            'post': 'create'
-        }), name='shopping_cart'
-    ),
+    # path(
+    #     'recipes/<int:recipe>/shopping_cart/',
+    #     ShoppingCartViewSet.as_view({
+    #         'delete': 'destroy',
+    #         'post': 'create'
+    #     }), name='shopping_cart'
+    # ),
     path(
         'users/<int:subscribing>/subscribe/',
         SubscribeViewSet.as_view({

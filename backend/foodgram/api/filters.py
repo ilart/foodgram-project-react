@@ -9,14 +9,19 @@ class RecipeFilter(django_filters.FilterSet):
         lookup_expr='contains',
     )
 
-    is_in_shopping_cart = django_filters.BooleanFilter(
-        field_name='is_in_shopping_cart',
-        method='is_in_shopping_cart'
-    )
+    # is_in_shopping_cart = django_filters.BooleanFilter(
+    #     name='id',
+    #     method='is_in_shopping_cart'
+    # )
+    #
+    # def is_in_shopping_cart(self, queryset, name, value):
+    #     import pdb
+    #     pdb.set_trace()
 
     class Meta:
         model = Recipe
-        fields = ('tags', 'author',)
+        fields = ['tags', 'author',]
+        # fields = ['tags', 'author', 'is_in_shopping_cart']
 
 
 class IngredientFilter(django_filters.FilterSet):
