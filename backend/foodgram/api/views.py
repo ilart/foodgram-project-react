@@ -12,7 +12,7 @@ from api.filters import IngredientFilter, RecipeFilter
 from api.paginators import RecipePaginator
 from api.serializers import (
     IngredientSerializer,
-    RecipeSerializer,
+    RecipeCreateSerializer,
     RecipeListSerializer,
     RecipeSerializerMinified,
     ShoppingCartSerializer,
@@ -40,26 +40,6 @@ HEADER = ('| Наименование                  | Количество \n
           '|-------------------------------|--------------\n')
 
 
-def add_remove_recipe_model(class_object, method, user, model, pk):
-    if method == 'POST':
-        recipe = class_object.get_object()
-        item, created = model.objects.get_or_create(
-            recipe=recipe,
-            user=user
-        )
-        if not created:
-            return Response(status=400)
-        return Response(
-            RecipeSerializerMinified(recipe, many=False).data,
-            status=201
-        )
-    get_object_or_404(
-        model,
-        user=user.id,
-        recipe=pk).delete()
-    return Response(status=204)
-
-
 class TagsViewSet(ListModelMixin, RetrieveModelMixin, viewsets.GenericViewSet):
     serializer_class = TagSerializer
     queryset = Tag.objects.all()
@@ -71,22 +51,31 @@ class TagsViewSet(ListModelMixin, RetrieveModelMixin, viewsets.GenericViewSet):
 class RecipeViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
-    filter_fields = ('tags',)
     filter_class = RecipeFilter
     pagination_class = RecipePaginator
+    queryset = Recipe.objects.all()
 
-    def get_queryset(self):
-        queryset = Recipe.objects.all()
-        # for name, model in {
-        #     'is_in_shopping_cart': ShoppingCart,
-        #     'is_favorited': Favorite
-        # }.items():
-        #     value = self.request.query_params.get(name)
-        #     if value and int(value) == 1:
-        #         queryset = queryset.filter(id__in=model.objects.filter(
-        #             user=self.request.user
-        #         ).values('recipe'))
-        return queryset
+    def perform_create(self, serializer):
+        return serializer.save()
+
+    def perform_update(self, serializer):
+        return serializer.save()
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(RecipeListSerializer(
+            self.perform_create(serializer),
+            context={'request': request}
+        ).data)
+
+    def update(self, request, *args, **kwargs):
+        serializer = self.get_serializer(self.get_object(), data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(RecipeListSerializer(
+            self.perform_update(serializer),
+            context={'request': request}
+        ).data)
 
     @action(detail=False, methods=['get'])
     def download_shopping_cart(self, request):
@@ -96,7 +85,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     .filter(user=request.user.id)
                     .values('recipe')))
             .values('ingredient_id__name', 'ingredient_id__measurement_unit')
-            .annotate(amount=Sum('total_amount'))
+            .annotate(total_amount=Sum('amount'))
         )
         response = HttpResponse(content_type=CONTENT_TYPE)
         response['Content-Disposition'] = (
@@ -112,20 +101,37 @@ class RecipeViewSet(viewsets.ModelViewSet):
         response.writelines(lines)
         return response
 
+    def add_remove_recipe_model(self, method, user, model, pk):
+        if method == 'POST':
+            recipe = self.get_object()
+            item, created = model.objects.get_or_create(
+                recipe=recipe,
+                user=user
+            )
+            if not created:
+                return Response(status=400)
+            return Response(
+                RecipeSerializerMinified(recipe, many=False).data,
+                status=201
+            )
+        get_object_or_404(
+            model,
+            user=user.id,
+            recipe=pk).delete()
+        return Response(status=204)
+
     @action(detail=True, methods=['post', 'delete'])
     def favorite(self, request, pk):
-        return add_remove_recipe_model(self, request.method, request.user, Favorite, pk)
+        return self.add_remove_recipe_model(request.method, request.user, Favorite, pk)
 
     @action(detail=True, methods=['post', 'delete'])
     def shopping_cart(self, request, pk):
-        # import pdb
-        # pdb.set_trace()
-        return add_remove_recipe_model(self, request.method, request.user, ShoppingCart, pk)
+        return self.add_remove_recipe_model(request.method, request.user, ShoppingCart, pk)
 
     def get_serializer_class(self):
-        if self.action == 'list':
+        if self.action in ['list', 'retrieve']:
             return RecipeListSerializer
-        return RecipeSerializer
+        return RecipeCreateSerializer
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
@@ -141,28 +147,6 @@ class ShoppingCartViewSet(viewsets.ModelViewSet):
     serializer_class = ShoppingCartSerializer
     queryset = ShoppingCart.objects.all()
     permission_classes = (permissions.IsAuthenticated,)
-
-    # def create(self, request, recipe):
-    #     if ShoppingCart.objects.filter(
-    #             recipe=recipe,
-    #             user=self.request.user
-    #     ):
-    #         return Response(status=400)
-    #     recipe = get_object_or_404(Recipe, id=recipe)
-    #     serializer = self.get_serializer(
-    #         data={'recipe': recipe, 'user': self.request.user}
-    #     )
-    #     serializer.is_valid(raise_exception=True)
-    #     serializer.save(recipe=recipe)
-    #     headers = self.get_success_headers(serializer.data)
-    #     return Response(serializer.data['recipe'], status=201, headers=headers)
-    #
-    # def destroy(self, request, recipe):
-    #     get_object_or_404(
-    #         ShoppingCart,
-    #         user=request.user.id, recipe=recipe
-    #     ).delete()
-    #     return Response(status=204)
 
 
 class SubscribeViewSet(ModelViewSet):
