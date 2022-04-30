@@ -122,11 +122,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post', 'delete'])
     def favorite(self, request, pk):
-        return self.add_remove_recipe_model(request.method, request.user, Favorite, pk)
+        return self.add_remove_recipe_model(
+            request.method, request.user, Favorite, pk
+        )
 
     @action(detail=True, methods=['post', 'delete'])
     def shopping_cart(self, request, pk):
-        return self.add_remove_recipe_model(request.method, request.user, ShoppingCart, pk)
+        return self.add_remove_recipe_model(
+            request.method, request.user, ShoppingCart, pk
+        )
 
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve']:

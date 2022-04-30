@@ -173,7 +173,9 @@ class RecipeCreateSerializer(ModelSerializer):
         ingredients = set()
         for ingredient in data['ingredients']:
             if ingredient['ingredient'] in ingredients:
-                raise ValidationError(DUPLICATE.format(id=ingredient['ingredient']))
+                raise ValidationError(
+                    DUPLICATE.format(id=ingredient['ingredient'])
+                )
             ingredients.add(ingredient['ingredient'])
         return data
 
@@ -186,7 +188,9 @@ class RecipeCreateSerializer(ModelSerializer):
         for ingredient in ingredients:
             IngredientInRecipe.objects.create(
                 recipe=recipe,
-                ingredient=get_object_or_404(Ingredient, id=ingredient['ingredient']),
+                ingredient=get_object_or_404(
+                    Ingredient, id=ingredient['ingredient']
+                ),
                 amount=ingredient['amount']
             )
 
