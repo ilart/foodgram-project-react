@@ -10,9 +10,8 @@ def filter_user_recipes_in_model(queryset, user, model, value):
 
 
 class RecipeFilter(django_filters.FilterSet):
-    tags = django_filters.CharFilter(
-        field_name='tags__slug',
-        lookup_expr='contains',
+    tags = django_filters.AllValuesMultipleFilter(
+        field_name='tags__slug'
     )
 
     is_in_shopping_cart = django_filters.BooleanFilter(
