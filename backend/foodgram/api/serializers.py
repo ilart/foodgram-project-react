@@ -1,6 +1,7 @@
 import base64
 import uuid
 
+from django.core.paginator import Paginator
 from django.core.validators import MinValueValidator
 from django.shortcuts import get_object_or_404
 from rest_framework.serializers import (
@@ -94,10 +95,22 @@ class SubscribeSerializer(ModelSerializer):
         fields = ['email', 'id', 'username', 'first_name', 'last_name',
                   'is_subscribed', 'recipes', 'recipes_count']
 
+    # def get_recipes(self, item):
+
     def get_recipes(self, item):
         return RecipeSerializerMinified(
-            item.subscribing.recipes, many=True
+            Paginator(
+                item.subscribing.recipes.all(),
+                (
+                    self.context['request'].query_params.get('recipes_limit'))
+            ).page(
+                self.context['request'].query_params.get('page')
+            ), many=True
         ).data
+
+        # return RecipeSerializerMinified(
+        #     item.subscribing.recipes, many=True
+        # ).data
 
     def get_recipes_count(self, item):
         return item.subscribing.recipes.all().count()
