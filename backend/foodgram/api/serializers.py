@@ -212,6 +212,7 @@ class RecipeCreateSerializer(ModelSerializer):
             validated_data.pop('tags'),
             validated_data.pop('ingredients')
         )
+        recipe.save()
         return super().update(recipe, validated_data)
 
 
