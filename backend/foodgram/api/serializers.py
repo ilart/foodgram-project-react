@@ -96,8 +96,6 @@ class SubscribeSerializer(ModelSerializer):
                   'is_subscribed', 'recipes', 'recipes_count']
 
     def get_recipes(self, item):
-        import pdb
-        pdb.set_trace()
         return RecipeSerializerMinified(
             Paginator(
                 item.subscribing.recipes.all(),
