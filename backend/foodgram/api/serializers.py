@@ -102,7 +102,10 @@ class SubscribeSerializer(ModelSerializer):
             Paginator(
                 item.subscribing.recipes.all(),
                 (
-                    self.context['request'].query_params.get('recipes_limit') or 10)
+                    self.context['request']
+                    .query_params
+                    .get('recipes_limit') or 10
+                )
             ).page(
                 self.context['request'].query_params.get('page') or 1
             ), many=True
