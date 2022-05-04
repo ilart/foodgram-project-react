@@ -96,13 +96,15 @@ class SubscribeSerializer(ModelSerializer):
                   'is_subscribed', 'recipes', 'recipes_count']
 
     def get_recipes(self, item):
+        import pdb
+        pdb.set_trace()
         return RecipeSerializerMinified(
             Paginator(
                 item.subscribing.recipes.all(),
                 (
-                    self.context['request'].query_params.get('recipes_limit'))
+                    self.context['request'].query_params.get('recipes_limit') or 10)
             ).page(
-                self.context['request'].query_params.get('page')
+                self.context['request'].query_params.get('page') or 1
             ), many=True
         ).data
 
