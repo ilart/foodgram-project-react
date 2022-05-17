@@ -67,7 +67,3 @@ docker-compose exec backend python3 ./manage.py flush
 Здесь вы можете ознакомится и проверить как работает мой тестовый сервер:
 - [Admin page](http://51.250.81.3/admin/)
 - [Foodgram](http://51.250.81.3/signin/)
-\
-email: admin@example.com
-\
-пароль: AdminPassword777
